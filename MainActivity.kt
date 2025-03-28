@@ -47,6 +47,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.vitalrite_1.ui.doctor.PatientHistoryScreen
+import com.example.vitalrite_1.ui.user.EditPrescriptionScreen
+import com.example.vitalrite_1.ui.user.EditProfileScreen
+import com.example.vitalrite_1.ui.user.FamilyMemberDetailsScreen
+import com.example.vitalrite_1.ui.user.FamilySpaceScreen
 
 class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
@@ -186,12 +190,7 @@ fun VitalRiteApp() {
         }
         composable("login") { LoginScreen(navController) }
         composable("signup") { SignupScreen(navController) }
-        composable("userDashboard") {
-            UserDashboard(
-                navController,
-                var showAddPrescriptionDialog by remember { mutableStateOf(false) }
-            ) 
-        }
+        composable("userDashboard") { UserDashboard(navController) }
         composable("doctorDashboard") { DoctorDashboard(navController) }
         composable("ePrescription") { EPreScreen(navController) }
         composable("appointments") { AppointmentsScreen(navController) }
@@ -214,7 +213,20 @@ fun VitalRiteApp() {
             val prescriptionId = backStackEntry.arguments?.getString("prescriptionId") ?: ""
             PrescriptionDetailScreen(navController = navController, prescriptionId = prescriptionId)
         }
-        composable("showAllCards") { ShowAllCardsScreen(navController = navController)  }
+        composable("editPrescription/{extractedText}") { backStackEntry ->
+            val text = backStackEntry.arguments?.getString("extractedText") ?: ""
+            EditPrescriptionScreen(
+                extractedText = text,
+                userId = FirebaseAuth.getInstance().currentUser?.uid ?: "",
+                firestore = FirebaseFirestore.getInstance(),
+                navController = navController
+            )
+        }
+        composable("familySpace") { FamilySpaceScreen(navController) }
+        composable("familyMemberDetails/{pid}") { backStackEntry ->
+            FamilyMemberDetailsScreen(navController, backStackEntry.arguments?.getString("pid") ?: "")
+        }
+        composable("editProfile") { EditProfileScreen(navController) }
     }
 }
 
