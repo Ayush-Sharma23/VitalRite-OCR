@@ -73,7 +73,7 @@ fun TopBar(navController: NavController, title: String) {
                         text = { Text("Edit Profile", color = Color.Black, fontSize = 16.sp) },
                         onClick = {
                             showMenu = false
-                            // Navigate to Edit Profile screen (not implemented yet)
+                            navController.navigate("editProfile")
                         }
                     )
                     DropdownMenuItem(
