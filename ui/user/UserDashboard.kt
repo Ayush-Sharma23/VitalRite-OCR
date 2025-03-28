@@ -165,13 +165,14 @@ fun UserDashboard(navController: NavController) {
                     modifier = Modifier.size(32.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { navController.navigate("ePrescription") }) {
-                    Icon(
-                        imageVector = Icons.Default.AttachFile,
-                        contentDescription = "Add Prescription",
-                        tint = Color.White
-                    )
-                }
+                IconButton(onClick = { showAddPrescriptionDialog = true }) 
+               {
+                Icon(
+                    imageVector = Icons.Default.AttachFile,
+                    contentDescription = "Add Prescription",
+                    tint = Color.White
+                )
+            }
                 IconButton(onClick = { navController.navigate("appointments") }) {
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
