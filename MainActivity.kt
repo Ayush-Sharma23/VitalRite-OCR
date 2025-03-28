@@ -186,7 +186,12 @@ fun VitalRiteApp() {
         }
         composable("login") { LoginScreen(navController) }
         composable("signup") { SignupScreen(navController) }
-        composable("userDashboard") { UserDashboard(navController) }
+        composable("userDashboard") {
+            UserDashboard(
+                navController,
+                var showAddPrescriptionDialog by remember { mutableStateOf(false) }
+            ) 
+        }
         composable("doctorDashboard") { DoctorDashboard(navController) }
         composable("ePrescription") { EPreScreen(navController) }
         composable("appointments") { AppointmentsScreen(navController) }
