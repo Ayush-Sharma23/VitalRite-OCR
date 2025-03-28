@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -54,14 +52,16 @@ fun UserDashboard(navController: NavController) {
     var sosMessage by remember { mutableStateOf("") }
     var showMoreOptions by remember { mutableStateOf(false) }
     var showNotifications by remember { mutableStateOf(false) }
+    var showAddPrescriptionDialog by remember { mutableStateOf(false) } // New state for dialog
 
-    // Sample notifications (replace with actual data from Firestore if needed)
+    // Sample notifications (replace with Firestore data if needed)
     val notifications = listOf(
         "Take Medicine! It is time to take your morning medicines.",
         "Your Appointment is scheduled! Your appointment with Dr. Arya is scheduled for Thursday, 23-08-25 at 15:00",
         "Add Information! Streamline your experience by completing your profile"
     )
 
+    // SOS message auto-dismissal
     LaunchedEffect(sosMessage) {
         if (sosMessage.isNotEmpty()) {
             delay(5000L)
@@ -69,6 +69,7 @@ fun UserDashboard(navController: NavController) {
         }
     }
 
+    // Fetch appointments and prescriptions from Firestore
     LaunchedEffect(Unit) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@LaunchedEffect
 
@@ -134,6 +135,7 @@ fun UserDashboard(navController: NavController) {
             }
     }
 
+    // Cleanup listeners on disposal
     DisposableEffect(Unit) {
         onDispose {
             appointmentListener?.remove()
@@ -141,6 +143,7 @@ fun UserDashboard(navController: NavController) {
         }
     }
 
+    // Define colors and gradients
     val primaryColor = Color(0xFF6200EA)
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFFF5F7FA), Color(0xFFE0E7FF))
@@ -165,14 +168,13 @@ fun UserDashboard(navController: NavController) {
                     modifier = Modifier.size(32.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { showAddPrescriptionDialog = true }) 
-               {
-                Icon(
-                    imageVector = Icons.Default.AttachFile,
-                    contentDescription = "Add Prescription",
-                    tint = Color.White
-                )
-            }
+                IconButton(onClick = { showAddPrescriptionDialog = true }) { // Updated to show dialog
+                    Icon(
+                        imageVector = Icons.Default.AttachFile,
+                        contentDescription = "Add Prescription",
+                        tint = Color.White
+                    )
+                }
                 IconButton(onClick = { navController.navigate("appointments") }) {
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
@@ -346,7 +348,7 @@ fun UserDashboard(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Third Card: Medical History Chart (Illustrative)
+                // Third Card: Medical History Chart
                 Card(
                     modifier = Modifier
                         .width(200.dp)
@@ -502,6 +504,55 @@ fun UserDashboard(navController: NavController) {
                             .padding(16.dp),
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
                     )
+                }
+            }
+        }
+    }
+
+    // Add Prescription Dialog (New)
+    if (showAddPrescriptionDialog) {
+        Dialog(onDismissRequest = { showAddPrescriptionDialog = false }) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .shadow(4.dp, RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(12.dp)),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Add Prescription",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color.Black
+                        ),
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    TextButton(onClick = {
+                        // TODO: Handle Upload Image
+                        showAddPrescriptionDialog = false
+                    }) {
+                        Text("Upload Image", color = Color.Black, fontSize = 16.sp)
+                    }
+                    TextButton(onClick = {
+                        // TODO: Handle Capture Image
+                        showAddPrescriptionDialog = false
+                    }) {
+                        Text("Capture Image", color = Color.Black, fontSize = 16.sp)
+                    }
+                    TextButton(onClick = {
+                        // TODO: Handle Upload PDF
+                        showAddPrescriptionDialog = false
+                    }) {
+                        Text("Upload PDF", color = Color.Black, fontSize = 16.sp)
+                    }
                 }
             }
         }
