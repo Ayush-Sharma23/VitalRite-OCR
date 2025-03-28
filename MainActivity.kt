@@ -209,6 +209,7 @@ fun VitalRiteApp() {
             val prescriptionId = backStackEntry.arguments?.getString("prescriptionId") ?: ""
             PrescriptionDetailScreen(navController = navController, prescriptionId = prescriptionId)
         }
+        composable("showAllCards") { ShowAllCardsScreen(navController = navController)  }
     }
 }
 
